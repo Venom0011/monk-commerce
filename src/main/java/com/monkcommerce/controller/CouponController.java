@@ -3,6 +3,7 @@ package com.monkcommerce.controller;
 import com.monkcommerce.model.Cart;
 import com.monkcommerce.model.Coupon;
 import com.monkcommerce.model.CouponDTO;
+import com.monkcommerce.model.CouponUpdateDTO;
 import com.monkcommerce.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -76,9 +77,27 @@ public class CouponController {
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteCoupoun(Integer coupounId){
+    @DeleteMapping("delete/{couponId}")
+    public ResponseEntity<String> deleteCoupoun(@PathVariable Integer coupounId){
         return ResponseEntity.ok(couponService.deleteCoupon(coupounId));
+    }
+
+    @PostMapping("/apply/all/cart/{cartId}/product/{productId}")
+    public ResponseEntity<?> applyApplicableCoupon(@PathVariable Integer cartId,@PathVariable Integer productId){
+        try{
+            return ResponseEntity.ok(couponService.applyApplicableCouponsToCart(cartId,productId));
+        }catch (Exception ex){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @PutMapping("/update/{couponId}")
+    public ResponseEntity<?> updateCoupon(@PathVariable Integer couponId, @RequestBody CouponUpdateDTO couponUpdateDTO){
+        try{
+            return ResponseEntity.ok(couponService.updateCoupon(couponId,couponUpdateDTO));
+        }catch (Exception ex){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
 
 
